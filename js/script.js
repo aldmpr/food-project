@@ -1,3 +1,5 @@
+'use strict'
+
 window.addEventListener("DOMContentLoaded", () => {
 
     //Tabs
@@ -241,22 +243,23 @@ window.addEventListener("DOMContentLoaded", () => {
             `;
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
+            
             const formData = new FormData(form);
 
-            request.send(formData);
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksMOdal(message.success);
-                    form.reset();
-                    statusMessage.remove();
-                } else {
-                    showThanksModal(message.failure);
-                }
+            fetch('server.php', {
+                method: post,
+                // headers: {
+                //     'Content-type': 'application/json'
+                // },
+                body: formData
+            }).then(data => {
+                console.log(data);
+                showThanksMOdal(message.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
             });
         });
     }
